@@ -5,11 +5,12 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
-import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.ReactContext;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.wix.reactnativenotifications.BuildConfig;
 import com.wix.reactnativenotifications.core.JsIOHelper;
+import com.wix.reactnativenotifications.core.AppLifecycleFacade;
+import com.wix.reactnativenotifications.core.AppLifecycleFacadeHolder;
 
 import static com.wix.reactnativenotifications.Defs.LOGTAG;
 import static com.wix.reactnativenotifications.Defs.TOKEN_RECEIVED_EVENT_NAME;
@@ -88,8 +89,8 @@ public class FcmToken implements IFcmToken {
     }
 
     protected void sendTokenToJS() {
-        final ReactInstanceManager instanceManager = ((ReactApplication) mAppContext).getReactNativeHost().getReactInstanceManager();
-        final ReactContext reactContext = instanceManager.getCurrentReactContext();
+        AppLifecycleFacade facade = AppLifecycleFacadeHolder.get();
+        final ReactContext reactContext = facade.getRunningReactContext();
 
         // Note: Cannot assume react-context exists cause this is an async dispatched service.
         if (reactContext != null && reactContext.hasActiveCatalystInstance()) {
